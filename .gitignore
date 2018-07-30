@@ -1,4 +1,6 @@
-# Byte-compiled / optimized / DLL files
+# project specific files
+label.png
+# # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
