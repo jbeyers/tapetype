@@ -21,7 +21,7 @@ void setup() {
   Serial.begin(9600);
   // Start toggle.
   pinMode(start_in, INPUT_PULLUP);
-  // Stepper driver control
+  // Stepper driver controls
   pinMode(step_out, OUTPUT);
   pinMode(dir_out, OUTPUT);
   pinMode(disable_out, OUTPUT);
@@ -29,12 +29,14 @@ void setup() {
 } 
 
 void loop() { 
-    // Wait for a button press.
+    // Got this bit off the internet from a basic serial to servo tutorial.
     if (Serial.available()) {
         pos_byte = Serial.readStringUntil('\n'); // read data until newline
         pos = pos_byte.toInt();   // change datatype from string to integer        
         servox.write(pos); // move servo
     }
+    // Create a debounced single trigger from the timing switch and send a
+    // serial timing message.
     current = millis();
     if ( digitalRead(13)) {
         high = current;
@@ -48,6 +50,9 @@ void loop() {
             Serial.println('p');
         }
     }
+  // Control the stepper motor. Very rough, but good enough. The delays were
+  // manually tuned together with the microstepping settings, using the TLAR
+  // (That Looks About Right) method.
   if (digitalRead(start_in) == LOW) {
       digitalWrite(disable_out, LOW);
       digitalWrite(dir_out, HIGH);
