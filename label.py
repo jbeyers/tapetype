@@ -4,16 +4,22 @@ import serial
 
 # Base image
 im = Image.new('RGB', (300,20), color='white')
+text = "Hello World".upper()
+font_size = 22
+offset = -5
+up_position = '105\n'
+down_position = '90\n'
 
 # Place the text
 d = ImageDraw.Draw(im)
-font = ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 30)
-d.text((50,-5), "Hello World", font=font, fill=(0,0,0))
+font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', font_size)
+d.text((20, offset), text, font=font, fill=(0,0,0))
+
+# Save it as a png for reference
+im.save('label.png')
 
 # Since the labels are printed bottom line first, flip it.
 im = ImageOps.flip(im)
-# Save it as a png for reference
-im.save('label.png')
 
 # Convert into a list of lists of numbers, where 0 is black and 255 is white.
 im = im.convert(mode='1')
@@ -32,12 +38,11 @@ for line in pixels:
     # different color to the previous one.
     for pixel in line:
         if pixel > 0 and prev_pixel == 0:
-            ser.write('100\n')
-            print '100\n'
+            ser.write(up_position)
+            print up_position
         elif pixel == 0 and prev_pixel > 0:
-            ser.write('90\n')
-            print '90\n'
+            ser.write(down_position)
+            print down_position
         prev_pixel = pixel
-        # This determines the spacing of the pixels. at 0.05, it runs over an:
-        # the picture gets skewed.
-        sleep(0.04)
+        # This time delay determines the spacing of the pixels.
+        sleep(0.06)
