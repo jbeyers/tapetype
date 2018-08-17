@@ -42,12 +42,12 @@ void loop() {
         high = current;
         if (current - low > 50 && ping) {
             ping = false;
+            Serial.println('p');
         }
     } else {
         low = current;
         if (current - high > 50 && !ping) {
             ping = true;
-            Serial.println('p');
         }
     }
   // Control the stepper motor. Very rough, but good enough. The delays were
@@ -56,9 +56,9 @@ void loop() {
   if (digitalRead(start_in) == LOW) {
       digitalWrite(disable_out, LOW);
       digitalWrite(dir_out, HIGH);
-      delay(2);
+      delay(3);
       digitalWrite(step_out, HIGH);
-      delay(2);
+      delay(3);
       digitalWrite(step_out, LOW);
     } else {
       digitalWrite(disable_out, HIGH);
