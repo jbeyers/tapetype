@@ -4,11 +4,13 @@ import serial
 
 # Base image
 im = Image.new('RGB', (300,20), color='white')
-text = "Hello World".upper()
+text = "breadboard".upper()
 font_size = 22
 offset = -5
 up_position = '105\n'
 down_position = '90\n'
+max_height = 24
+max_width = 300
 
 # Place the text
 d = ImageDraw.Draw(im)
@@ -29,6 +31,7 @@ pixels = [pixels[i * width:(i + 1) * width] for i in xrange(height)]
 
 # Send the pixel data as up and down commands.
 ser = serial.Serial('/dev/ttyACM0')
+ser.write('181\n')
 for line in pixels:
     # Wait for the trigger time
     trigger = ser.readline()
@@ -46,3 +49,4 @@ for line in pixels:
         prev_pixel = pixel
         # This time delay determines the spacing of the pixels.
         sleep(0.06)
+ser.write('0\n')

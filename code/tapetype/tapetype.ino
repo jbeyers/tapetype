@@ -4,6 +4,7 @@
 Servo servox;
 
 bool ping = false; // Timing sensor latch
+bool go = false; // Enable motor and printing
 String pos_byte;
 int pos;
 unsigned long low;
@@ -26,6 +27,7 @@ void setup() {
   pinMode(dir_out, OUTPUT);
   pinMode(disable_out, OUTPUT);
   digitalWrite(disable_out, HIGH);
+  digitalWrite(dir_out, HIGH);
 } 
 
 void loop() { 
@@ -33,7 +35,13 @@ void loop() {
     if (Serial.available()) {
         pos_byte = Serial.readStringUntil('\n'); // read data until newline
         pos = pos_byte.toInt();   // change datatype from string to integer        
-        servox.write(pos); // move servo
+        if (pos == 0) {
+          go = false;
+        } else if (pos > 180) {
+          go = true;
+        } else {
+          servox.write(pos); // move servo
+        }
     }
     // Create a debounced single trigger from the timing switch and send a
     // serial timing message.
@@ -53,9 +61,8 @@ void loop() {
   // Control the stepper motor. Very rough, but good enough. The delays were
   // manually tuned together with the microstepping settings, using the TLAR
   // (That Looks About Right) method.
-  if (digitalRead(start_in) == LOW) {
+  if (go) {
       digitalWrite(disable_out, LOW);
-      digitalWrite(dir_out, HIGH);
       delay(3);
       digitalWrite(step_out, HIGH);
       delay(3);
