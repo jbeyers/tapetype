@@ -4,7 +4,7 @@ import serial
 
 # Base image
 im = Image.new('RGB', (300,20), color='white')
-text = "breadboard".upper()
+text = "coil winder".upper()
 font_size = 22
 offset = -5
 up_position = '105\n'
@@ -31,6 +31,7 @@ pixels = [pixels[i * width:(i + 1) * width] for i in xrange(height)]
 
 # Send the pixel data as up and down commands.
 ser = serial.Serial('/dev/ttyACM0')
+ser.write(up_position)
 ser.write('181')
 for line in pixels:
     # Wait for the trigger time
