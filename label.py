@@ -31,7 +31,7 @@ pixels = [pixels[i * width:(i + 1) * width] for i in xrange(height)]
 
 # Send the pixel data as up and down commands.
 ser = serial.Serial('/dev/ttyACM0')
-ser.write('181\n')
+ser.write('181')
 for line in pixels:
     # Wait for the trigger time
     trigger = ser.readline()
@@ -49,4 +49,4 @@ for line in pixels:
         prev_pixel = pixel
         # This time delay determines the spacing of the pixels.
         sleep(0.06)
-ser.write('0\n')
+ser.write('0')
