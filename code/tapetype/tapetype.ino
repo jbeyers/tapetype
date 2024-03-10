@@ -99,24 +99,12 @@ const int st_in2 = 10;
 const int st_in1 = 11;
 
 // 2048 steps per revolution
-const int steps_per_rev = 2048;
-
 // 8.6mm diameter of the sandpaper-covered pencil, about 27 mm per revolution.
-const int mm_per_rev = 27;
-
-// Stepper speed in rpm.
-const int rpm_max = 16;
-const int rpm_min = 4;
-int rpm = 4;
-// Tracking when last the rpm was set
-unsigned long rpm_millis;
-// milliseconds at a speed before going to the next one.
-unsigned long rpm_delay = 100;
-
-// steps per mm
-// computed value is 75.8, measured length is about 76. Round to nearest integer.
+// steps per mm computed at 75.8, measured length is about 76. Round to nearest integer.
 const int steps_per_mm = 76;
+// Stepper speed is 5mm/s
 float stepper_speed = steps_per_mm * -5.0;
+// 200 milliseconds per mm (each pixel is 1mm)
 unsigned long millis_per_mm = 200;
 
 // Stepping is blocking, and we want the start point more accurate than 1mm.
@@ -132,7 +120,6 @@ const int start_in = 12;
 // Indicator if the stepper should be running.
 bool go = false;
 
-// Stepper stepper(steps_per_rev, st_in4, st_in3, st_in2, st_in1);
 AccelStepper stepper(AccelStepper::FULL4WIRE,st_in1, st_in2, st_in3, st_in4);
 
 // Timing sensor latch. True if in the printable area.
@@ -142,7 +129,6 @@ bool latch = false;
 // Advancing to the next line depends on this.
 bool latch_follower = false;
 bool latch_triggered = false;
-int lead_in = 18;
 
 // Which label are we on.
 int label_number = -1;
@@ -150,8 +136,6 @@ int label_number = -1;
 int line_number = -1;
 // Which pixel are we on.
 int pixel_number = -1;
-
-bool print_mode = false; // Enable motor and printing
 
 // params for the debounce.
 unsigned long last_low_millis;
@@ -173,11 +157,8 @@ void setup() {
   pinMode(timing_in, INPUT_PULLUP);
   // Start toggle.
   pinMode(start_in, INPUT_PULLUP);
-  // Stepper driver controls
 
-  // Set rpm_millis initial
-  rpm_millis = millis();
-} 
+};
 
 void loop() { 
 
@@ -214,7 +195,6 @@ void loop() {
     };
     line_number = -1;
     pixel_number = -1;
-    rpm = 4;
   };
 
   if (go) {
