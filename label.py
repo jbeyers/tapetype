@@ -5,8 +5,9 @@ and output them as arrays for the Arduino code to use to print the labels.
 
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
-MAX_WIDTH = 204
+MAX_WIDTH = 285
 MAX_HEIGHT = 24
+TEXT_COMPRESS = 1.5
 
 labels = [
     # 'RING BELL',
@@ -16,10 +17,10 @@ labels = [
     'PI ZERO',
     # 'GLASSES',
     # 'DC FANS',
-    # 'T-SLOT',
+    'T-SLOT',
     # '3D PRINTER',
-    'HDD MRMR',
-    'RC PROPS',
+    # 'HDD MRMR',
+    # 'RC PROPS',
     # 'DRILLING',
     # 'HINGES, HANDLES',
     # 'CATCHES, LOCKS',
@@ -87,9 +88,11 @@ def fit_image(txt, width, height):
         d = ImageDraw.Draw(im)
         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', s)
         d.text((width,height), txt, font=font, fill=(0,0,0))
+        compressed_width = int(w/TEXT_COMPRESS)
+        im = im.resize((compressed_width, h) )
         pixels = list(im.convert(mode='1').getdata())
-        pixels = [pixels[i * w:(i + 1) * w] for i in range(h)]
-        for i in range(w):
+        pixels = [pixels[i * compressed_width:(i + 1) * compressed_width] for i in range(h)]
+        for i in range(compressed_width):
             for j in range(h):
                 if pixels[j][i] == 0:
                     first_col = min(first_col, i)
